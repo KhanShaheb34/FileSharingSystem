@@ -1,8 +1,8 @@
 import sys
 import socket
 import threading
-from PySide6.QtWidgets import QApplication, QPushButton, QDialog, QLineEdit, QVBoxLayout, QLabel, QHBoxLayout
-from PySide6.QtCore import Qt
+from PySide2.QtWidgets import QApplication, QPushButton, QDialog, QLineEdit, QVBoxLayout, QLabel, QHBoxLayout
+from PySide2.QtCore import Qt
 from serverSocket import ServerSocket
 
 
@@ -11,6 +11,7 @@ class ServerUI(QDialog):
     def __init__(self, parent=None):
         super(ServerUI, self).__init__(parent)
         self.setWindowTitle("Server")
+        self.resize(220, 100)
         self.mainLayout = QVBoxLayout()
         self.setLayout(self.mainLayout)
         self.HOST = socket.gethostbyname(socket.gethostname())
@@ -86,4 +87,4 @@ if __name__=='__main__':
 
     server_ui.show()
 
-    sys.exit(app.exec())
+    sys.exit(app.exec_())

@@ -2,6 +2,14 @@
 
 Share files through TCP socket in a network. Built using Python and Qt.
 
+## Install Required Packages
+
+Install the `PySide2` package for Qt. Open terminal and run:
+
+```sh
+pip install PySide2
+```
+
 ## Running Server
 
 Open a terminal in this folder and run:

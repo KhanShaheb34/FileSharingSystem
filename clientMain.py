@@ -23,6 +23,7 @@ class ClientUI(QDialog):
         self.setupStartUi()
 
     def setupStartUi(self):
+        self.resize(220, 100)
         self.hostLabel = QLabel("Host")
         self.hostEdit = QLineEdit(f"{self.HOST}")
         self.hostLayout = QHBoxLayout()
