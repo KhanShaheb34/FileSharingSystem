@@ -4,7 +4,7 @@ import os
 import socket
 import ntpath
 import threading
-from PySide2.QtWidgets import QApplication, QPushButton, QDialog, QLineEdit, QVBoxLayout, QLabel, QHBoxLayout, QListWidget, QListWidgetItem, QMenu, QAction, QFileDialog
+from PySide2.QtWidgets import QApplication, QPushButton, QDialog, QLineEdit, QVBoxLayout, QLabel, QHBoxLayout, QListWidget, QListWidgetItem, QMenu, QAction, QFileDialog, QMessageBox
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QIcon
 from clientSocket import ClientSocket
@@ -73,18 +73,19 @@ class ClientUI(QDialog):
 
     def uploadItem(self):
         fpath = QFileDialog.getOpenFileName(self, 'Upload File', '.')
-        filename = ntpath.basename(fpath[0])
-        message = json.dumps({'action': 'upload', 'filename': filename})
-        self.clientSocket.send_message(message)
-        data = self.clientSocket.recv_message()
-        print('==>', data['message'])
-        thread = threading.Thread(
-            target=self.clientSocket.send_file, args=(fpath[0], ))
-        thread.start()
-        if filename not in self.files:
-            self.files.append(filename)
-            self.files.sort()
-            self.refreshList()
+        if len(fpath[0]) > 0:
+            filename = ntpath.basename(fpath[0])
+            message = json.dumps({'action': 'upload', 'filename': filename})
+            self.clientSocket.send_message(message)
+            data = self.clientSocket.recv_message()
+            print('==>', data['message'])
+            thread = threading.Thread(
+                target=self.clientSocket.send_file, args=(fpath[0], ))
+            thread.start()
+            if filename not in self.files:
+                self.files.append(filename)
+                self.files.sort()
+                self.refreshList()
 
     def myListWidgetContext(self, position):
         popMenu = QMenu()
@@ -143,7 +144,11 @@ class ClientUI(QDialog):
     def handleStart(self):
         self.HOST = self.hostEdit.text()
         self.PORT = int(self.portEdit.text())
-        self.files = self.clientSocket.connectToServer(self.HOST, self.PORT)
+        try:
+            self.files = self.clientSocket.connectToServer(self.HOST, self.PORT)
+        except:
+            msgBox = QMessageBox.critical(self, "Connection Failed", "Could not connect to server.\nPlease check if the server is on.")
+            msgBox.exec_()
         self.clearLayout(self.mainLayout)
         self.setupConnectedUI()
 
